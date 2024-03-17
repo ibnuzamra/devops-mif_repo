@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-mif
+  labels:
+    environment: test
+spec:
+  selector:
+    matchLabels:
+      app: devops-mif
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: devops-mif
+        environment: dev
+    spec:
+      containers:
+        - name: devops-mif
+          image: index.docker.io/ibnuzamra/devops-mif_images:testing
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+      imagePullSecrets:
+        - name: dockercred
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: devops-mif-service
+spec:
+  selector:
+    app: devops-mif
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort

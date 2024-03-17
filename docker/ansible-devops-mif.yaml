@@ -1,0 +1,24 @@
+---
+- name: Git pull from repository
+  become: true
+  become_user: sre
+  vars_prompt:
+    - name: branch_or_tag
+      prompt: "Branch or tag to checkout"
+      private: no
+  vars:
+    ssh_key: "~/.ssh/key-ssh/deploy"   
+    dest_path: "/var/www/html"
+    repo_bitbucket: "git@github.com:ibnuzamra/devops-mif_repo.git"
+  hosts: devops-mif
+
+  tasks:
+   - name: Pull file from source
+     git:
+       repo: '{{ repo_bitbucket }}'
+       update: yes
+       key_file: '{{ ssh_key }}'
+       dest: '{{ dest_path }}'
+       version: "{{ branch_or_tag }}"
+       force: yes
+     tags: deploy
